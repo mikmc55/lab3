@@ -1,5 +1,3 @@
-import asyncio
-import contextlib
 import os
 import re
 from datetime import datetime, timedelta
@@ -20,9 +18,9 @@ log = structlog.get_logger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
 
-JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "5mprcfoumvjvn1yv9o7lt89yx51jod7z")
+JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "")
 JACKETT_CACHE_MINUTES = timedelta(minutes=int(os.environ.get("JACKETT_CACHE_MINUTES", "15")))
-JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://87.98.218.210:9117")
+JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://localhost:9117")
 
 REQUEST_DURATION = Histogram(
     name="jackett_request_duration_seconds",
@@ -141,29 +139,28 @@ async def make_request(
 
         params["apikey"] = JACKETT_API_KEY
         log.debug("jackett request")
-        with contextlib.suppress(asyncio.TimeoutError):
-            async with aiohttp.ClientSession() as session, session.get(
-                url=f"{JACKETT_URL}{url}",
-                params=params,
-                timeout=timeout,
-                headers={"Accept": "application/json"},
-            ) as response:
-                if response.status == 200:
-                    raw: dict[str, Any] = await response.json()
-                    res = model.model_validate(raw)
-                    await db.set_model(cache_key, res, JACKETT_CACHE_MINUTES)
-                    return res
+        async with aiohttp.ClientSession() as session, session.get(
+            url=f"{JACKETT_URL}{url}",
+            params=params,
+            timeout=timeout,
+            headers={"Accept": "application/json"},
+        ) as response:
+            if response.status == 200:
+                raw: dict[str, Any] = await response.json()
+                res = model.model_validate(raw)
+                await db.set_model(cache_key, res, JACKETT_CACHE_MINUTES)
+                return res
 
-                body = await response.text()
-                log.error(
-                    "jacket request failed with bad status code",
-                    status=response.status,
-                    reason=response.reason,
-                    body=body,
-                    exc_info=True,
-                )
-                raise JackettSearchError(
-                    f"Jackett request failed: {response.reason}",
-                    status=response.status,
-                    body=body,
-                )
+            body = await response.text()
+            log.error(
+                "jacket request failed with bad status code",
+                status=response.status,
+                reason=response.reason,
+                body=body,
+                exc_info=True,
+            )
+            raise JackettSearchError(
+                f"Jackett request failed: {response.reason}",
+                status=response.status,
+                body=body,
+            )
