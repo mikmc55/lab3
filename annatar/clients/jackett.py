@@ -20,9 +20,9 @@ log = structlog.get_logger(__name__)
 
 T = TypeVar("T", bound=BaseModel)
 
-JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "")
+JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "5mprcfoumvjvn1yv9o7lt89yx51jod7z")
 JACKETT_CACHE_MINUTES = timedelta(minutes=int(os.environ.get("JACKETT_CACHE_MINUTES", "15")))
-JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://localhost:9117")
+JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://87.98.218.210:9117")
 
 REQUEST_DURATION = Histogram(
     name="jackett_request_duration_seconds",
