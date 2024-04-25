@@ -6,7 +6,7 @@ volumes:
 
 services:
   annatar:
-    image: registry.gitlab.com/stremio-add-ons/annatar:latest
+    image: docker.io/mikmc/annatar:latest
     ports:
       - "8000:8000"
     depends_on:
