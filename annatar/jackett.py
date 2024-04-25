@@ -24,9 +24,8 @@ from annatar.torrent import Category
 log = structlog.get_logger(__name__)
 
 
-JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://localhost:9117")
-JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "")
-
+JACKETT_URL: str = os.environ.get("JACKETT_URL", "http://82.172.152.9:9117")
+JACKETT_API_KEY: str = os.environ.get("JACKETT_API_KEY", "kptut9ad0fqgllyeykn27dhr9p6cd3hq")
 JACKETT_MAX_RESULTS = int(os.environ.get("JACKETT_MAX_RESULTS", 100))
 JACKETT_TIMEOUT = int(os.environ.get("JACKETT_TIMEOUT", 6))
 API_SEARCH_TIMEOUT = int(os.environ.get("API_SEARCH_TIMEOUT", 10))
@@ -35,7 +34,7 @@ JACKETT_CACHE_MINUTES = timedelta(minutes=int(os.environ.get("JACKETT_CACHE_MINU
 
 JACKETT_INDEXERS_LIST: list[str] = os.environ.get(
     "JACKETT_INDEXERS",
-    "yts,eztv,kickasstorrents-ws,thepiratebay,therarbg,torrentgalaxy,bitsearch,limetorrents,badasstorrents",
+    "1337x,audiences,eztv,hdsky,isohunt2,keepfriends,kickasstorrents-ws,limetorrents,rutracker-ru,scenehd,springsunday,thepiratebay,totheglorycookie,yourbittorrent,yts",
 ).split(",")
 
 
